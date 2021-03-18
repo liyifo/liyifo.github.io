@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+  <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="介绍：​    吉如一老师提出的线段树。 ​    想当年只是看懂他我就花了很久 ​    这玩意遇到了真的要手打不成… ​    这棵树要维护区间加、区间取最值、区间求和、区间最值与区间历史最值操作。 ​    本文不谈原理，仅解析吉如一线段树。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="吉如一线段树模板">
+<meta property="og:url" content="http://example.com/2021/03/18/%E5%90%89%E5%A6%82%E4%B8%80%E7%BA%BF%E6%AE%B5%E6%A0%91/index.html">
+<meta property="og:site_name" content="一硕的博客">
+<meta property="og:description" content="介绍：​    吉如一老师提出的线段树。 ​    想当年只是看懂他我就花了很久 ​    这玩意遇到了真的要手打不成… ​    这棵树要维护区间加、区间取最值、区间求和、区间最值与区间历史最值操作。 ​    本文不谈原理，仅解析吉如一线段树。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/03/18/images/image-20210318130338537.png">
+<meta property="article:published_time" content="2021-03-18T04:56:08.000Z">
+<meta property="article:modified_time" content="2021-03-18T05:10:54.283Z">
+<meta property="article:author" content="一硕">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="算法竞赛">
+<meta property="article:tag" content="线段树">
+<meta property="article:tag" content="模板">
+<meta property="article:tag" content="洛谷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/18/images/image-20210318130338537.png">
+
+
+<link rel="canonical" href="http://example.com/2021/03/18/%E5%90%89%E5%A6%82%E4%B8%80%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>吉如一线段树模板 | 一硕的博客</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="一硕的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">一硕的博客</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">介绍：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">思路：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">代码：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="一硕"
+      src="/images/head.jpeg">
+  <p class="site-author-name" itemprop="name">一硕</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=1441758913&auto=1&height=32"></iframe>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/18/%E5%90%89%E5%A6%82%E4%B8%80%E7%BA%BF%E6%AE%B5%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.jpeg">
+      <meta itemprop="name" content="一硕">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一硕的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          吉如一线段树模板
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-03-18 12:56:08 / 修改时间：13:10:54" itemprop="dateCreated datePublished" datetime="2021-03-18T12:56:08+08:00">2021-03-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h4 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：</h4><p>​    吉如一老师提出的线段树。</p>
+<p>​    想当年只是看懂他我就花了很久</p>
+<p>​    这玩意遇到了真的要手打不成…</p>
+<p>​    这棵树要维护区间加、<strong>区间取最值</strong>、区间求和、区间最值与<strong>区间历史最值</strong>操作。</p>
+<p>​    本文不谈原理，仅解析吉如一线段树。</p>
+<span id="more"></span> 
+
+<p>​    附上例题：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P6242">洛谷P6242</a></p>
+<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>​    区间加，区间求和，和区间最值都是不难实现的部分，属于基础。难点在于区间最值与区间历史最值。</p>
+<p>​    我们可以看一下例题的题目描述：</p>
+<p>​    <img src="../images/image-20210318130338537.png" alt="image-20210318130338537"></p>
+<p>​    2操作为区间更改，4和5为区间最值。</p>
+<p>​    B数组也就是维护历史最大值。</p>
+<p>​    先不考虑历史最值的问题，如果我们只是区间最值和区间修改、查询的话，每次修改后，我们的最值要如何去维护？在比较大的数据下，我们连区间求和都需要用懒惰标记。但是我们怎么知道当前节点的最值需不要改变？我们知道我们需要<code>l r</code>加上一个数，但是那个最小值/最大值，我们并不知道在哪的地方，我们不确定这个节点属不属于<code>l r</code>，就算属于，我们也不确定这个节点加上数之后还是不是最小的节点。这样的话，我们只能一直到<code>l==r/这段区间的最小值（最大值）>(<)目前求的区间的最小值（最大值）></code>两种情况的节点的时候才能确定这段区间的情况。</p>
+<p>​    但是吉如一老师提出了一个很好的方案：</p>
+<p>​<br>$$<br>对于每一个结点，我们维护区间最大值，最大值出现次数，区间严格次大值（用 sec 表示）<br>$$<br>​    具体看代码注释吧，还算详细</p>
+<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><p>附上我一年前提交的代码，当年可能是抄完理解了就堪堪了事了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 550010</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ll long long</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3f3f3f3f</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tree</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> l,r;</span><br><span class="line">    <span class="keyword">int</span> mx;<span class="comment">//区间最值</span></span><br><span class="line">    <span class="keyword">int</span> mx_;<span class="comment">//区间历史最值</span></span><br><span class="line">    <span class="keyword">int</span> se;<span class="comment">//次大</span></span><br><span class="line">    <span class="keyword">int</span> cnt;<span class="comment">//最大值出现的次数</span></span><br><span class="line">    ll sum;<span class="comment">//区间和</span></span><br><span class="line">    <span class="keyword">int</span> add1,add1_,add2,add2_;<span class="comment">//四个懒惰标记</span></span><br><span class="line">    <span class="comment">//add1为当前区间最大值的懒惰标记</span></span><br><span class="line">    <span class="comment">//add2为当前区间非最大值的懒惰标记</span></span><br><span class="line">    <span class="comment">//add1_为当前区间历史 add1最大值的懒惰标记</span></span><br><span class="line">    <span class="comment">//add2_为当前区间历史 add2非最大值的懒惰标记</span></span><br><span class="line">&#125;t[N&lt;&lt;<span class="number">2</span>];</span><br><span class="line"><span class="keyword">int</span> n,m,f;</span><br><span class="line"><span class="keyword">int</span> a[N];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//上传</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushup</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;<span class="comment">//更新区间和，区间最大值，次大值，历史最大值</span></span><br><span class="line">    t[p].sum=t[p*<span class="number">2</span>].sum+t[p*<span class="number">2</span>+<span class="number">1</span>].sum;<span class="comment">//区间和</span></span><br><span class="line">    t[p].mx_=max(t[p*<span class="number">2</span>].mx_,t[p*<span class="number">2</span>+<span class="number">1</span>].mx_);<span class="comment">//历史区间最大值</span></span><br><span class="line">    <span class="keyword">if</span>(t[p*<span class="number">2</span>].mx==t[p*<span class="number">2</span>+<span class="number">1</span>].mx)&#123;<span class="comment">//三种最大值的情况</span></span><br><span class="line">        t[p].mx=t[p*<span class="number">2</span>].mx;</span><br><span class="line">        t[p].se=max(t[p*<span class="number">2</span>].se,t[p*<span class="number">2</span>+<span class="number">1</span>].se);</span><br><span class="line">        t[p].cnt=t[p*<span class="number">2</span>].cnt+t[p*<span class="number">2</span>+<span class="number">1</span>].cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(t[p*<span class="number">2</span>].mx&gt;t[p*<span class="number">2</span>+<span class="number">1</span>].mx)&#123;</span><br><span class="line">        t[p].mx=t[p*<span class="number">2</span>].mx;</span><br><span class="line">        t[p].se=max(t[p*<span class="number">2</span>].se,t[p*<span class="number">2</span>+<span class="number">1</span>].mx);</span><br><span class="line">        t[p].cnt=t[p*<span class="number">2</span>].cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        t[p].mx=t[p*<span class="number">2</span>+<span class="number">1</span>].mx;</span><br><span class="line">        t[p].se=max(t[p*<span class="number">2</span>].mx,t[p*<span class="number">2</span>+<span class="number">1</span>].se);</span><br><span class="line">        t[p].cnt=t[p*<span class="number">2</span>+<span class="number">1</span>].cnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    t[p].l=l,t[p].r=r;</span><br><span class="line">    t[p].add1=t[p].add1_=t[p].add2=t[p].add2_=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(l==r)&#123;</span><br><span class="line">        t[p].sum=t[p].mx_=t[p].mx=a[l];</span><br><span class="line">        t[p].se=-INF,t[p].cnt=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid =l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    build(p*<span class="number">2</span>,l,mid);</span><br><span class="line">    build(p*<span class="number">2</span>+<span class="number">1</span>,mid+<span class="number">1</span>,r);</span><br><span class="line">    pushup(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//更新</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> k1,<span class="keyword">int</span> k1_,<span class="keyword">int</span> k2,<span class="keyword">int</span> k2_)</span></span>&#123;</span><br><span class="line">    <span class="comment">//标记下传时更新当前p的值</span></span><br><span class="line">    <span class="comment">//最大值和非最大值分两部分更新</span></span><br><span class="line">    <span class="comment">//k1为区间增加标记</span></span><br><span class="line">    <span class="comment">//k1_为历史最大值加减标记</span></span><br><span class="line">    <span class="comment">//k2为非最大值加减标记</span></span><br><span class="line">    <span class="comment">//k2_为非最大值历史加减标记</span></span><br><span class="line">    t[p].sum+=<span class="number">1ll</span>*k1*t[p].cnt+<span class="number">1ll</span>*k2*(t[p].r-t[p].l+<span class="number">1</span>-t[p].cnt);<span class="comment">//更新区间和</span></span><br><span class="line">    t[p].mx_=max(t[p].mx_,t[p].mx+k1_);<span class="comment">//更新区间历史最大值</span></span><br><span class="line">    t[p].add1_=max(t[p].add1_,t[p].add1+k1_);<span class="comment">//更新标记</span></span><br><span class="line">    t[p].mx+=k1,t[p].add1+=k1;<span class="comment">//更新区间最大值和懒惰标记</span></span><br><span class="line">    t[p].add2_=max(t[p].add2_,t[p].add2+k2_);<span class="comment">//更新非最大值标记</span></span><br><span class="line">    <span class="keyword">if</span>(t[p].se!=-INF) t[p].se+=k2;<span class="comment">//更新次大值</span></span><br><span class="line">    t[p].add2+=k2;<span class="comment">//更新非最大值标记</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushdown</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;<span class="comment">//标记下穿</span></span><br><span class="line">    <span class="comment">//每段区间分为两部分，一部分为最大值，一部分为非最大值。</span></span><br><span class="line">    <span class="comment">//如果当前区间有上个区间的最大值，即更新最大值与非最大值</span></span><br><span class="line">    <span class="comment">//如果没有，则全部当成非最大值更新</span></span><br><span class="line">    <span class="keyword">int</span> temp=max(t[p*<span class="number">2</span>].mx,t[p*<span class="number">2</span>+<span class="number">1</span>].mx);<span class="comment">//区间最大值</span></span><br><span class="line">    <span class="keyword">if</span>(t[p*<span class="number">2</span>].mx==temp)<span class="comment">//如果左子树有最大值的话 就需要更新左子树</span></span><br><span class="line">        update(<span class="number">2</span>*p,t[p].add1,t[p].add1_,t[p].add2,t[p].add2_);</span><br><span class="line">    <span class="keyword">else</span> update(<span class="number">2</span>*p,t[p].add2,t[p].add2_,t[p].add2,t[p].add2_);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(t[p*<span class="number">2</span>+<span class="number">1</span>].mx==temp)<span class="comment">//如果右子树有最大值的话 就需要更新右子树</span></span><br><span class="line">        update(<span class="number">2</span>*p+<span class="number">1</span>,t[p].add1,t[p].add1_,t[p].add2,t[p].add2_);</span><br><span class="line">    <span class="keyword">else</span> update(<span class="number">2</span>*p+<span class="number">1</span>,t[p].add2,t[p].add2_,t[p].add2,t[p].add2_);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//清空标记</span></span><br><span class="line">    t[p].add1=t[p].add1_=t[p].add2=t[p].add2_=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify1</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> k)</span></span>&#123;<span class="comment">//区间加</span></span><br><span class="line">    <span class="keyword">if</span>(t[p].l&gt;r||t[p].r&lt;l) <span class="keyword">return</span> ;</span><br><span class="line">    <span class="keyword">if</span>(l&lt;=t[p].l&amp;&amp;r&gt;=t[p].r)&#123;<span class="comment">//最大值和非最大值都加上k</span></span><br><span class="line">        update(p,k,k,k,k);<span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    pushdown(p);</span><br><span class="line">    modify1(<span class="number">2</span>*p,l,r,k),modify1(<span class="number">2</span>*p+<span class="number">1</span>,l,r,k);</span><br><span class="line">    pushup(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//往下知道满足条件为止，最差把l==r时的值给更新了</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">modify2</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> k)</span></span>&#123;<span class="comment">//取min（a[i],v）;</span></span><br><span class="line">    <span class="keyword">if</span>(t[p].l&gt;r||t[p].r&lt;l||k&gt;=t[p].mx) <span class="keyword">return</span> ;</span><br><span class="line">    <span class="keyword">if</span>(l&lt;=t[p].l&amp;&amp;r&gt;=t[p].r&amp;&amp;k&gt;t[p].se)&#123;<span class="comment">//更新最大值，并且k在最大值和次大值之间，把最大值更为次大值</span></span><br><span class="line">        update(p,k-t[p].mx,k-t[p].mx,<span class="number">0</span>,<span class="number">0</span>);<span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    pushdown(p);</span><br><span class="line">    modify2(p*<span class="number">2</span>,l,r,k),modify2(p*<span class="number">2</span>+<span class="number">1</span>,l,r,k);</span><br><span class="line">    pushup(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query3</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;<span class="comment">//求区间和</span></span><br><span class="line">    <span class="keyword">if</span>(t[p].l&gt;r||t[p].r&lt;l) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(l&lt;=t[p].l&amp;&amp;r&gt;=t[p].r) <span class="keyword">return</span> t[p].sum;</span><br><span class="line">    pushdown(p);</span><br><span class="line">    <span class="keyword">return</span> query3(p*<span class="number">2</span>,l,r)+query3(p*<span class="number">2</span>+<span class="number">1</span>,l,r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query4</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;<span class="comment">//求区间最大值</span></span><br><span class="line">    <span class="keyword">if</span>(t[p].l&gt;r||t[p].r&lt;l) <span class="keyword">return</span> -INF;</span><br><span class="line">    <span class="keyword">if</span>(l&lt;=t[p].l&amp;&amp;r&gt;=t[p].r) <span class="keyword">return</span> t[p].mx;</span><br><span class="line">    pushdown(p);</span><br><span class="line">    <span class="keyword">return</span> max(query4(p*<span class="number">2</span>,l,r),query4(p*<span class="number">2</span>+<span class="number">1</span>,l,r));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query5</span><span class="params">(<span class="keyword">int</span> p,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;<span class="comment">//求历史最大值</span></span><br><span class="line">    <span class="keyword">if</span>(t[p].l&gt;r||t[p].r&lt;l) <span class="keyword">return</span> -INF;</span><br><span class="line">    <span class="keyword">if</span>(l&lt;=t[p].l&amp;&amp;r&gt;=t[p].r) <span class="keyword">return</span> t[p].mx_;</span><br><span class="line">    pushdown(p);</span><br><span class="line">    <span class="keyword">return</span> max(query5(p*<span class="number">2</span>,l,r),query5(p*<span class="number">2</span>+<span class="number">1</span>,l,r));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ios::sync_with_stdio(<span class="literal">false</span>);</span><br><span class="line">    <span class="built_in">cin</span>.tie(<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">cin</span>&gt;&gt;n&gt;&gt;m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;i++) <span class="built_in">cin</span>&gt;&gt;a[i];</span><br><span class="line">    build(<span class="number">1</span>,<span class="number">1</span>,n);</span><br><span class="line">    <span class="keyword">while</span>(m--)&#123;</span><br><span class="line">        <span class="built_in">cin</span>&gt;&gt;f;</span><br><span class="line">        <span class="keyword">int</span> l,r,k;</span><br><span class="line">        <span class="keyword">if</span>(f==<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r&gt;&gt;k;</span><br><span class="line">            modify1(<span class="number">1</span>,l,r,k);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(f==<span class="number">2</span>)&#123;</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r&gt;&gt;k;</span><br><span class="line">            modify2(<span class="number">1</span>,l,r,k);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(f==<span class="number">3</span>) &#123;</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; query3(<span class="number">1</span>, l, r) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(f==<span class="number">4</span>) &#123;</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; query4(<span class="number">1</span>, l, r) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(f==<span class="number">5</span>)&#123;</span><br><span class="line">            <span class="built_in">cin</span>&gt;&gt;l&gt;&gt;r;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; query5(<span class="number">1</span>, l, r) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/" rel="tag"># 算法竞赛</a>
+              <a href="/tags/%E7%BA%BF%E6%AE%B5%E6%A0%91/" rel="tag"># 线段树</a>
+              <a href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag"># 模板</a>
+              <a href="/tags/%E6%B4%9B%E8%B0%B7/" rel="tag"># 洛谷</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/17/%E7%BA%BF%E6%AE%B5%E6%A0%91%E6%A8%A1%E6%9D%BF/" rel="prev" title="线段树模板">
+                  <i class="fa fa-chevron-left"></i> 线段树模板
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一硕</span>
+</div>
+
+<span id="sitetime"></span>
+<script language=javascript>
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000;
+		var minutes = seconds * 60;
+		var hours = minutes * 60;
+		var days = hours * 24;
+		var years = days * 365;
+		var today = new Date();
+		var todayYear = today.getFullYear();
+		var todayMonth = today.getMonth()+1;
+		var todayDate = today.getDate();
+		var todayHour = today.getHours();
+		var todayMinute = today.getMinutes();
+		var todaySecond = today.getSeconds();
+		/*
+		Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+		year - 作为date对象的年份，为4位年份值
+		month - 0-11之间的整数，做为date对象的月份
+		day - 1-31之间的整数，做为date对象的天数
+		hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+		minutes - 0-59之间的整数，做为date对象的分钟数
+		seconds - 0-59之间的整数，做为date对象的秒数
+		microseconds - 0-999之间的整数，做为date对象的毫秒数
+        */
+		var t1 = Date.UTC(2021,03,14,22,05,45); //北京时间2018-2-13 00:00:00
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+		var diff = t2-t1;
+		var diffYears = Math.floor(diff/years);
+		var diffDays = Math.floor((diff/days)-diffYears*365);
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+		document.getElementById("sitetime").innerHTML=" 本站已运行"+/*diffYears+" 年 "+*/diffDays+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒";
+	}
+	siteTime();
+</script>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script color="0,0,0" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+  <script>
+    NProgress.configure({
+      showSpinner: true
+    });
+    NProgress.start();
+    document.addEventListener('readystatechange', () => {
+      if (document.readyState === 'interactive') {
+        NProgress.inc(0.8);
+      }
+      if (document.readyState === 'complete') {
+        NProgress.done();
+      }
+    });
+    document.addEventListener('pjax:send', () => {
+      NProgress.start();
+    });
+    document.addEventListener('pjax:success', () => {
+      NProgress.done();
+    });
+  </script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+  
+  
+    <script src="/js/cursor/love.min.js"></script>
+  
+
+
+</body>
+</html>
