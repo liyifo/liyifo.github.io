@@ -32,9 +32,9 @@
 <meta property="og:site_name" content="一硕的博客">
 <meta property="og:description" content="介绍：​    吉如一老师提出的线段树。 ​    想当年只是看懂他我就花了很久 ​    这玩意遇到了真的要手打不成… ​    这棵树要维护区间加、区间取最值、区间求和、区间最值与区间历史最值操作。 ​    本文不谈原理，仅解析吉如一线段树。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2021/03/18/images/image-20210318130338537.png">
+<meta property="og:image" content="https://onefo.top/images/a1.png">
 <meta property="article:published_time" content="2021-03-18T04:56:08.000Z">
-<meta property="article:modified_time" content="2021-03-18T05:10:54.283Z">
+<meta property="article:modified_time" content="2021-03-18T05:42:18.163Z">
 <meta property="article:author" content="一硕">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta property="article:tag" content="算法竞赛">
@@ -42,7 +42,7 @@
 <meta property="article:tag" content="模板">
 <meta property="article:tag" content="洛谷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/03/18/images/image-20210318130338537.png">
+<meta name="twitter:image" content="https://onefo.top/images/a1.png">
 
 
 <link rel="canonical" href="http://example.com/2021/03/18/%E5%90%89%E5%A6%82%E4%B8%80%E7%BA%BF%E6%AE%B5%E6%A0%91/">
@@ -98,7 +98,9 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/atom.xml" title="一硕的博客" type="application/atom+xml">
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="一硕的博客" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
@@ -290,7 +292,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-03-18 12:56:08 / 修改时间：13:10:54" itemprop="dateCreated datePublished" datetime="2021-03-18T12:56:08+08:00">2021-03-18</time>
+      <time title="创建时间：2021-03-18 12:56:08 / 修改时间：13:42:18" itemprop="dateCreated datePublished" datetime="2021-03-18T12:56:08+08:00">2021-03-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -329,10 +331,10 @@
 <p>​    附上例题：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P6242">洛谷P6242</a></p>
 <h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>​    区间加，区间求和，和区间最值都是不难实现的部分，属于基础。难点在于区间最值与区间历史最值。</p>
 <p>​    我们可以看一下例题的题目描述：</p>
-<p>​    <img src="../images/image-20210318130338537.png" alt="image-20210318130338537"></p>
+<p>​    <img src="https://onefo.top/images/a1.png" alt="Example"></p>
 <p>​    2操作为区间更改，4和5为区间最值。</p>
 <p>​    B数组也就是维护历史最大值。</p>
-<p>​    先不考虑历史最值的问题，如果我们只是区间最值和区间修改、查询的话，每次修改后，我们的最值要如何去维护？在比较大的数据下，我们连区间求和都需要用懒惰标记。但是我们怎么知道当前节点的最值需不要改变？我们知道我们需要<code>l r</code>加上一个数，但是那个最小值/最大值，我们并不知道在哪的地方，我们不确定这个节点属不属于<code>l r</code>，就算属于，我们也不确定这个节点加上数之后还是不是最小的节点。这样的话，我们只能一直到<code>l==r/这段区间的最小值（最大值）>(<)目前求的区间的最小值（最大值）></code>两种情况的节点的时候才能确定这段区间的情况。</p>
+<p>​    先不考虑历史最值的问题，如果我们只是区间最值和区间修改、查询的话，每次修改后，我们的最值要如何去维护？在比较大的数据下，我们连区间求和都需要用懒惰标记。但是我们怎么知道当前节点的最值需不要改变？我们知道我们需要<code>l r</code>加上一个数，但是那个最小值/最大值，我们并不知道在哪的地方，我们不确定这个节点属不属于<code>l r</code>，就算属于，我们也不确定这个节点加上数之后还是不是最小的节点。这样的话，我们只能一直到<code>l==r/这段区间的最小值（最大值）>(<)目前求的区间的最小值（最大值）></)目前求的区间的最小值（最大值）></code>两种情况的节点的时候才能确定这段区间的情况。</p>
 <p>​    但是吉如一老师提出了一个很好的方案：</p>
 <p>​<br>$$<br>对于每一个结点，我们维护区间最大值，最大值出现次数，区间严格次大值（用 sec 表示）<br>$$<br>​    具体看代码注释吧，还算详细</p>
 <h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><p>附上我一年前提交的代码，当年可能是抄完理解了就堪堪了事了</p>
@@ -510,6 +512,39 @@
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
 
 
 
