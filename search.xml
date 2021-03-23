@@ -34,7 +34,7 @@
       </tags>
   </entry>
   <entry>
-    <title>AcWing107.超快速排序</title>
+    <title>AcWing107 超快速排序</title>
     <url>/2021/03/23/AcWing107.%E8%B6%85%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</url>
     <content><![CDATA[<h4 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h4><p>​    题意为模拟冒泡排序，交换的次数等于逆序对对数，逆序对有两种求法：树状数组和归并排序</p>
 <p>​    注意：如果使用树状数组，由于数据范围太大需要使用离散化。</p>
